@@ -7,7 +7,7 @@ version: 2.1
 jobs:
   print_hello:
     docker: #executor type
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       - run:
         name: "hello"
@@ -15,7 +15,7 @@ jobs:
     
   print_world:
     docker: #executor type
-        - image: cimg/base:stable
+        - image: circleci/node:13.8.0
       steps:
         - run:
           name: "world"
@@ -38,9 +38,12 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
-      - hello
-      - world:
-        requires: # world job is dependent on the success of job 'hello'
-          - hello  
+      - print_hello
+      - print_world:
+          requires: # world job is dependent on the success of job 'hello'
+            - print_hello  
+      - say-hello:
+          requires:
+            - print_hello
+            - print_world
         
