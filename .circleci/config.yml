@@ -38,6 +38,7 @@
 #             - print_hello
 
 
+# Sharing Files Example
 # version: 2.1
 
 # jobs:
@@ -68,24 +69,43 @@
 #             - save_hello_world_output
 
 
+# Resuable code
+# version: 2.1
 
+# commands: 
+#   print_pipeline_id:
+#     steps:
+#       - run: echo ${CIRCLE_WORKFLOW_ID}
+
+# jobs:
+#   my_job:
+#     docker:
+#       - image: circleci/node:13.8.0
+#     steps:
+#       - print_pipeline_id
+      
+
+# workflows:
+#   my_workflow:
+#     jobs:
+#       - my_job
+
+
+    #  Job Failure Example
 version: 2.1
-
-commands: 
-  print_pipeline_id:
-    steps:
-      - run: echo ${CIRCLE_WORKFLOW_ID}
 
 jobs:
   my_job:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - print_pipeline_id
-      
+      - run: exit 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail
 
 workflows:
   my_workflow:
     jobs:
       - my_job
-      
